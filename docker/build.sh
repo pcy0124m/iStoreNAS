@@ -2,6 +2,7 @@
 
 case ${WORK_TARGET} in
   x86_64)
+
     ;;
   rk35xx)
     ;;
@@ -24,19 +25,19 @@ fi
 
 set -e
 if [ "$IB_FOUND" = "0" ]; then
-    if [ ! -f dl/${IB_NAME}.tar.xz ]; then
+    if [ ! -f dl/${IB_NAME}.tar.zst ]; then
         wget -O dl/${MF_NAME} ${IB_URL}${MF_NAME}
-        wget -O dl/${IB_NAME}.tar.xz ${IB_URL}${IB_NAME}.tar.xz
+        wget -O dl/${IB_NAME}.tar.zst ${IB_URL}${IB_NAME}.tar.zst
         wget -O dl/sha256sums ${IB_URL}sha256sums
         [ -s dl/sha256sums ]
         [ -s dl/${MF_NAME} ]
-        [ -s dl/${IB_NAME}.tar.xz ]
-        grep -Fq ${IB_NAME}.tar.xz dl/sha256sums
+        [ -s dl/${IB_NAME}.tar.zst ]
+        grep -Fq ${IB_NAME}.tar.zst dl/sha256sums
         cd dl && sha256sum -c --ignore-missing --status sha256sums
     fi
 
     cd ${WORK_SOURCE}
-    tar -C ib --strip-components=1 -xJf dl/${IB_NAME}.tar.xz
+    tar -C ib --strip-components=1 -xJf dl/${IB_NAME}.tar.zst
     cp -a src/* ib/
     ls patches/ | sort | xargs -n1 sh -c 'patch -p1 -d ib -i ../patches/$0'
     sed -i 's/ unofficial/ oversea/' ib/Makefile
